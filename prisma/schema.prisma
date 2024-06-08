@@ -1,0 +1,68 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User{
+   id           Int       @id @default(autoincrement()) 
+   email        String    @db.VarChar(128) @unique
+   username     String    @unique
+   firstName    String    @map("first_name")
+   passwordHash String    @map("password_hash")
+   createdAt    DateTime  @map("created_at")
+   updatedAt    DateTime? @map("updated_at")
+   columns      Column[]
+   comments     Comment[]
+
+   @@map("users")
+}
+
+model Column{
+  id           Int       @id @default(autoincrement()) 
+  title        String    @db.VarChar(255)
+  position     Int       @default(1)
+  createdAt    DateTime  @map("created_at")
+  updatedAt    DateTime? @map("updated_at")
+  userId       Int       @map("user_id")
+  user         User      @relation(fields: [userId], references: [id])
+  cards        Card[]
+
+  @@map("columns")
+}
+
+model Card{
+  id           Int       @id @default(autoincrement()) 
+  title        String    @db.VarChar(255)
+  description  String?   @db.Text 
+  position     Int       @db.Integer @default(1)
+  columnId     Int       @map("column_id")
+  column      Column     @relation(fields: [columnId], references: [id])
+  createdAt    DateTime  @map("created_at")
+  updatedAt    DateTime? @map("updated_at")
+  comments     Comment[]
+  
+  @@map("cards")
+}
+
+model Comment{
+  id           Int       @id @default(autoincrement()) 
+  text         String?   @db.Text
+  createdAt    DateTime  @map("created_at")
+  updatedAt    DateTime? @map("updated_at")
+  authorId     Int
+  user         User      @relation(fields: [authorId], references: [id])
+  cardId       Int       @map("card_id")
+  card         Card      @relation(fields:[cardId], references: [id])
+  
+  @@map("comments")
+}
