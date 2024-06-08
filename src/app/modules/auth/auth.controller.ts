@@ -7,7 +7,7 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
-import { EmailExistGuard } from '../../common/guards/email-exists.guards';
+import { EmailExistGuard } from '../../guards/email-exists.guards';
 import { exceptionHandler } from '../../helpers/exception-handler.helpers';
 import { AuthService } from './auth.service';
 import { default as CreateUserDto, default as SignUpDto } from './dto/sign-up';

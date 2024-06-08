@@ -10,6 +10,7 @@ import { UserRepository } from '../user/repository/user.repository';
 import SignInDto from './dto/sign-in.dto';
 import SignUpDto from './dto/sign-up';
 import TokensDto from './dto/tokens.dto';
+import { TokenPayloadInterface } from './interfaces/token-payload.interface';
 
 @Injectable()
 export class AuthService {
@@ -38,6 +39,11 @@ export class AuthService {
       },
     );
     return new TokensDto(accessToken);
+  }
+  async validateToken(token: string): Promise<TokenPayloadInterface> {
+    return this.jwtService.verify(token, {
+      secret: this.configService.get('JWT_SECRET'),
+    });
   }
 
   async signUp(dto: SignUpDto): Promise<TokensDto> {
