@@ -5,7 +5,7 @@ import {
   HttpStatus,
   Injectable,
 } from '@nestjs/common';
-import { UserRepository } from 'src/app/user/repository/user.repository';
+import { UserRepository } from 'src/app/modules/user/repository/user.repository';
 
 @Injectable()
 export class EmailExistGuard implements CanActivate {

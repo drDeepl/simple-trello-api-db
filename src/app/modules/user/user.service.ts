@@ -1,6 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common';
-import { PrismaExceptionHandler } from '../helpers/PrismaExceptionHandler';
-import { userPrismaErrorMessage } from '../utils/error-messages';
+import { PrismaExceptionHandler } from '../../helpers/PrismaExceptionHandler';
+import { userPrismaErrorMessage } from '../../utils/error-messages';
 import { UserRepository } from './repository/user.repository';
 
 @Injectable()
