@@ -1,27 +1,21 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { BaseColumnDto } from './base-column-dto';
+import { IsDateString } from 'class-validator';
+import { CreatedColumnDto } from './created-column.dto';
 
-export class CreatedColumnDto extends BaseColumnDto {
+export class ColumnDto extends CreatedColumnDto {
   @ApiProperty({
-    description: 'id пользователя',
-    nullable: false,
+    description: 'дата редактирования колонки(изменения названия, позиции)',
+    nullable: true,
     required: true,
   })
-  id: number;
-
-  @ApiProperty({
-    description: 'владелец колонки',
-    required: true,
-    nullable: false,
-  })
-  userId: number;
-
-  @ApiProperty({
-    description: 'дата создания колонки',
-    required: true,
-    nullable: false,
-  })
-  createdAt: string;
+  @IsDateString(
+    {},
+    {
+      message:
+        'дата обновления должна быть строкой в виде даты в формате  IsISO8601',
+    },
+  )
+  updatedAt: string | null;
 
   constructor(
     id: number,
@@ -29,10 +23,9 @@ export class CreatedColumnDto extends BaseColumnDto {
     position: number,
     createdAt: string,
     userId: number,
+    updatedAt: string | null = null,
   ) {
-    super(title, position);
-    this.id = id;
-    this.createdAt = createdAt;
-    this.userId = userId;
+    super(id, title, position, createdAt, userId);
+    this.updatedAt = updatedAt;
   }
 }

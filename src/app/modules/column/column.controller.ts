@@ -3,17 +3,25 @@ import { exceptionHandler } from '@/app/helpers/exception-handler.helpers';
 import {
   Body,
   Controller,
+  Delete,
+  Get,
   HttpStatus,
   Logger,
+  Param,
+  ParseIntPipe,
   Post,
+  Put,
   Request,
   UseGuards,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { ColumnService } from './column.service';
+import { ColumnDto } from './dto/column.dto';
 import { CreateColumnDto } from './dto/create-column.dto';
-import { CreatedColumnDto } from './dto/column.dto';
+import { CreatedColumnDto } from './dto/created-column.dto';
+import { EditColumnDto } from './dto/edit-column.dto';
+import { OwnerColumnGuard } from './guards/owner-column.guard';
 
 @ApiTags('ColumnController')
 @Controller('column')
@@ -25,10 +33,10 @@ export class ColumnController {
   @ApiResponse({ status: HttpStatus.OK, type: CreatedColumnDto })
   @ApiResponse({
     status: HttpStatus.UNAUTHORIZED,
-    description: 'появляется, если пользовтель не авторизован',
+    description: 'появляется, если пользователь не авторизован',
   })
   @UseGuards(AuthGuard('jwt'))
-  @Post('/create')
+  @Post('/')
   async createColumn(
     @Request() req: AuthRequest,
     @Body() createColumnDto: CreateColumnDto,
@@ -38,6 +46,73 @@ export class ColumnController {
         Number(req.user.sub),
         createColumnDto,
       );
+    } catch (error) {
+      throw exceptionHandler(error, this.logger);
+    }
+  }
+
+  @ApiOperation({ summary: 'получение колонок пользователя по его id' })
+  @ApiResponse({ status: HttpStatus.OK, type: CreatedColumnDto })
+  @ApiResponse({
+    status: HttpStatus.UNAUTHORIZED,
+    description: 'появляется, если пользователь не авторизован',
+  })
+  @UseGuards(AuthGuard('jwt'))
+  @Get('by-user/:userId')
+  async getColumnsByUserId(
+    @Param('userId', ParseIntPipe) userId: number,
+  ): Promise<ColumnDto[]> {
+    try {
+      return await this.columnService.getColumnsByUserId(userId);
+    } catch (error) {
+      throw exceptionHandler(error, this.logger);
+    }
+  }
+
+  @ApiOperation({ summary: 'редактирование колонки' })
+  @ApiResponse({ status: HttpStatus.OK, type: CreatedColumnDto })
+  @ApiResponse({
+    status: HttpStatus.UNAUTHORIZED,
+    description: 'появляется, если пользователь не авторизован',
+  })
+  @ApiResponse({
+    status: HttpStatus.FORBIDDEN,
+    description: 'появляется, если пользователь не является владельцем колонки',
+  })
+  @UseGuards(OwnerColumnGuard)
+  @UseGuards(AuthGuard('jwt'))
+  @Put('/:id')
+  async editColumnById(
+    @Request()
+    @Param('id', ParseIntPipe)
+    columnId: number,
+    @Body() editColumnDto: EditColumnDto,
+  ): Promise<ColumnDto> {
+    try {
+      return await this.columnService.editColumnById(columnId, editColumnDto);
+    } catch (error) {
+      throw exceptionHandler(error, this.logger);
+    }
+  }
+
+  @ApiOperation({ summary: 'удаление колонки' })
+  @ApiResponse({ status: HttpStatus.OK, type: CreatedColumnDto })
+  @ApiResponse({
+    status: HttpStatus.UNAUTHORIZED,
+    description: 'появляется, если пользователь не авторизован',
+  })
+  @ApiResponse({
+    status: HttpStatus.FORBIDDEN,
+    description: 'появляется, если пользователь не является владельцем колонки',
+  })
+  @UseGuards(OwnerColumnGuard)
+  @UseGuards(AuthGuard('jwt'))
+  @Delete('/:id')
+  async deleteColumnById(
+    @Param('id', ParseIntPipe) columnId: number,
+  ): Promise<void> {
+    try {
+      await this.columnService.deleteColumnById(columnId);
     } catch (error) {
       throw exceptionHandler(error, this.logger);
     }
