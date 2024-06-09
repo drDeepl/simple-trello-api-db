@@ -1,6 +1,6 @@
 import { PrismaExceptionHandler } from '@/app/helpers/PrismaExceptionHandler';
 import { cardPrismaErrorMessage } from '@/app/utils/error-messages';
-import { Injectable, Logger } from '@nestjs/common';
+import { BadGatewayException, Injectable, Logger } from '@nestjs/common';
 import { Card } from '@prisma/client';
 import { CardRepository } from './repository/card.repository';
 
@@ -14,6 +14,7 @@ export class CardService {
   constructor(private readonly cardRepository: CardRepository) {}
 
   async isOwnerUserCard(userId: number, cardId): Promise<boolean> {
+    throw new BadGatewayException('TODO: ADD FIELD user id in schema');
     try {
       const column: Card = await this.cardRepository.findUnique({
         where: {
