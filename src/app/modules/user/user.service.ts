@@ -58,4 +58,11 @@ export class UserService {
       throw this.prismaExceptionHandler.handleError(error);
     }
   }
+  async deleteUserById(userId: number): Promise<any> {
+    try {
+      await this.userRepository.delete({ where: { id: userId } });
+    } catch (error) {
+      throw this.prismaExceptionHandler.handleError(error);
+    }
+  }
 }
