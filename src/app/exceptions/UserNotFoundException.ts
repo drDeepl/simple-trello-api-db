@@ -1,7 +1,7 @@
-import { NotFoundException } from '@nestjs/common';
+import { HttpException, HttpStatus } from '@nestjs/common';
 
-export class UserNotFoundException extends NotFoundException {
-  constructor() {
-    super('Пользователь с такой электронной почтой не найден');
+export class UserNotFoundException extends HttpException {
+  constructor(message: string) {
+    super(message, HttpStatus.NOT_FOUND);
   }
 }

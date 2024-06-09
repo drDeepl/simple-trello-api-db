@@ -1,6 +1,6 @@
 import { Injectable, Logger, UnauthorizedException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { JwtService } from '@nestjs/jwt';
+import { JwtService, TokenExpiredError } from '@nestjs/jwt';
 import { User } from '@prisma/client';
 import * as bcrypt from 'bcrypt';
 import { UserNotFoundException } from '../../exceptions/UserNotFoundException';
@@ -41,9 +41,17 @@ export class AuthService {
     return new TokensDto(accessToken);
   }
   async validateToken(token: string): Promise<TokenPayloadInterface> {
-    return this.jwtService.verify(token, {
-      secret: this.configService.get('JWT_SECRET'),
-    });
+    try {
+      return await this.jwtService.verify(token, {
+        secret: this.configService.get('JWT_SECRET'),
+      });
+    } catch (error) {
+      if (error instanceof TokenExpiredError) {
+        this.logger.debug('TOKEN EXPIRED');
+        throw new UnauthorizedException('Время действия токена истекло');
+      }
+      throw new UnauthorizedException('Ошибка проверки токена');
+    }
   }
 
   async signUp(dto: SignUpDto): Promise<TokensDto> {
@@ -70,7 +78,9 @@ export class AuthService {
     });
 
     if (!user) {
-      throw new UserNotFoundException();
+      throw new UserNotFoundException(
+        'Пользователь с такой электронной почтой не найден',
+      );
     }
     const passwordMatches = await bcrypt.compare(
       dto.password,

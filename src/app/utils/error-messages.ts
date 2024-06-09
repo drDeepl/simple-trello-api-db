@@ -5,7 +5,7 @@ export const userPrismaErrorMessage: {
 } = {
   P2002: {
     statusCode: HttpStatus.FORBIDDEN,
-    description: 'Пользователь с такой электронной почтой уже существует',
+    description: 'Пользователь с таким публичным именем уже существует',
   },
   P2016: {
     statusCode: HttpStatus.BAD_REQUEST,

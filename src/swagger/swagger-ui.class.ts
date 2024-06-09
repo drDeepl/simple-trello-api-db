@@ -3,7 +3,7 @@ import { SWAGGER_UI_CONSTANTS } from './constants/swagger-ui.constants';
 export class SwaggerUI {
   constructor(private readonly applicationUrl: string) {}
 
-  private customSiteTitle = 'Custom Swagger UI';
+  private customSiteTitle = 'trello api swagger';
   private faviconFilename = 'nestjs-logo.png';
   private topbarIconFilename = 'nestjs-logo.png';
 
