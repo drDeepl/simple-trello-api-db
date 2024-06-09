@@ -14,6 +14,7 @@ async function bootstrap() {
 
   app.enableCors();
   app.useGlobalPipes(new ValidationPipe());
+
   app.setGlobalPrefix(process.env.GLOBAL_PREFIX_APP);
 
   await app.listen(3000);

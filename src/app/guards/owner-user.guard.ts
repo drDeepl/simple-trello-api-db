@@ -6,9 +6,11 @@ import {
   Logger,
   UnauthorizedException,
 } from '@nestjs/common';
+import { Request } from 'express';
 import { exceptionHandler } from '../helpers/exception-handler.helpers';
 import { AuthService } from '../modules/auth/auth.service';
 import { TokenPayloadInterface } from '../modules/auth/interfaces/token-payload.interface';
+import { extractJwtFromHeader } from '../utils/jwt.utils';
 
 @Injectable()
 export class OwnerUserGuard implements CanActivate {
@@ -17,14 +19,13 @@ export class OwnerUserGuard implements CanActivate {
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
     try {
-      const request = context.switchToHttp().getRequest();
-      const { authorization }: any = request.headers;
-      if (!authorization || authorization.trim() === '') {
+      const request: Request = context.switchToHttp().getRequest();
+      const accessToken: string | null = extractJwtFromHeader(request);
+      if (!accessToken) {
         throw new UnauthorizedException('пользователь неавторизован');
       }
-      const authToken = authorization.replace('Bearer', '').trim();
       const tokenPayload: TokenPayloadInterface =
-        await this.authService.validateToken(authToken);
+        await this.authService.validateToken(accessToken);
       if (tokenPayload.sub === Number(request.params.id)) {
         return true;
       }

@@ -5,9 +5,9 @@ import { join } from 'path';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { AuthModule } from './modules/auth/auth.module';
+import { ColumnModule } from './modules/column/column.module';
 import { PrismaModule } from './modules/prisma/prisma.module';
 import { UserModule } from './modules/user/user.module';
-import { ColumnModule } from './column/column.module';
 
 @Module({
   imports: [

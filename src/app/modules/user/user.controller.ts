@@ -1,3 +1,6 @@
+import { OwnerUserGuard } from '@/app/guards/owner-user.guard';
+import { EmailExistGuard } from '@/app/guards/email-exists.guards';
+import { exceptionHandler } from '@/app/helpers/exception-handler.helpers';
 import {
   Body,
   Controller,
@@ -11,9 +14,6 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
-import { OwnerUserGuard } from 'src/app/guards/auth.guard';
-import { EmailExistGuard } from 'src/app/guards/email-exists.guards';
-import { exceptionHandler } from 'src/app/helpers/exception-handler.helpers';
 import { EditUserDto } from './dto/edit-user.dto';
 import { UserDto } from './dto/user.dto';
 import { UserService } from './user.service';

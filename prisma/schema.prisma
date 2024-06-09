@@ -30,10 +30,10 @@ model User{
 model Column{
   id           Int       @id @default(autoincrement()) 
   title        String    @db.VarChar(255)
-  position     Int       @default(1)
-  createdAt    DateTime  @map("created_at")
-  updatedAt    DateTime? @map("updated_at")
+  position     Int       
   userId       Int       @map("user_id")
+  createdAt    DateTime  @default(now()) @map("created_at")
+  updatedAt    DateTime? @map("updated_at")
   user         User      @relation(fields: [userId], references: [id])
   cards        Card[]
 
