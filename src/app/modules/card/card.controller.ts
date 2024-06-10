@@ -19,7 +19,7 @@ import { CreateCardDto } from './dto/create-card.dto';
 import { CardDto } from './dto/card-dto';
 import { exceptionHandler } from '@/app/helpers/exception-handler.helpers';
 import { OwnerColumnGuard } from '../column/guards/owner-column.guard';
-import { OwnerCardGuard } from './guards/owner-card-card.guard';
+import { OwnerCardGuard } from './guards/owner-card.guard';
 import { EditCardDto } from './dto/edit-card.dto';
 import { HttpExceptionDto } from '@/app/common/dto/http-exception.dto';
 import { MoveCardDto } from './dto/move-card.dto';
