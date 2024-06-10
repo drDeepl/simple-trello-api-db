@@ -80,18 +80,16 @@ export class UserController {
     }
   }
 
-  @ApiOperation({ summary: 'удаление пользователя по его Id' })
-  @ApiResponse({ status: HttpStatus.OK })
-  @ApiResponse({
-    status: HttpStatus.NOT_FOUND,
+  @ApiOperation({
+    summary: 'удаление пользователя по его Id',
     description:
-      'появляется при отсутствии access token-a в заголовке или когда пользователь не является владельцем изменяемых данных',
-    type: HttpExceptionDto,
+      'вместе с пользователем удаляются все зависимые от него записи(колонка, карточка, комментарий)',
   })
+  @ApiResponse({ status: HttpStatus.OK })
   @ApiResponse({
     status: HttpStatus.FORBIDDEN,
     description:
-      'появляется, если id пользователя из токена не совпадает с id из параметра запроса',
+      'появляется при отсутствии access token-a в заголовке или когда пользователь удаляет не себя',
     type: HttpExceptionDto,
   })
   @ApiResponse({

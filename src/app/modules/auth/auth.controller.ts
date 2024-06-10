@@ -23,12 +23,17 @@ export class AuthController {
 
   @ApiOperation({ summary: 'регистрация пользователя' })
   @ApiResponse({ status: HttpStatus.OK, type: TokensDto })
+  @ApiBody({ type: CreateUserDto, description: '' })
   @ApiResponse({
     status: HttpStatus.BAD_REQUEST,
     description: 'появляется при ошибках валидации полей',
     type: HttpExceptionDto,
   })
-  @ApiBody({ type: CreateUserDto, description: '' })
+  @ApiResponse({
+    status: HttpStatus.FORBIDDEN,
+    description: 'появляется, если электронная почта уже существует',
+    type: HttpExceptionDto,
+  })
   @UseGuards(EmailExistGuard)
   @Post('signup')
   async signUp(@Body() createUserDto: SignUpDto): Promise<TokensDto> {
@@ -40,6 +45,7 @@ export class AuthController {
   }
 
   @ApiOperation({ summary: 'авторизация пользователя' })
+  @ApiBody({ type: CreateUserDto, description: 'создание пользователя' })
   @ApiResponse({ status: HttpStatus.OK, type: TokensDto })
   @ApiResponse({
     status: HttpStatus.BAD_REQUEST,
@@ -47,12 +53,16 @@ export class AuthController {
     type: HttpExceptionDto,
   })
   @ApiResponse({
-    status: HttpStatus.UNAUTHORIZED,
+    status: HttpStatus.FORBIDDEN,
     description:
       'появляется при несовпадении введенного пароля с паролем пользователя',
     type: HttpExceptionDto,
   })
-  @ApiBody({ type: CreateUserDto, description: '' })
+  @ApiResponse({
+    status: HttpStatus.NOT_FOUND,
+    description: 'появляется, если электронная почта не была найдена',
+    type: HttpExceptionDto,
+  })
   @Post('signin')
   async signIn(@Body() signInDto: SignUpDto): Promise<TokensDto> {
     try {

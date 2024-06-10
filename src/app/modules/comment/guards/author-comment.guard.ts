@@ -15,6 +15,7 @@ export class AuthorCommentGuard implements CanActivate {
   constructor(private readonly commentService: CommentService) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
+    this.logger.warn('CAN ACTIVATE');
     try {
       const request: AuthRequest = context.switchToHttp().getRequest();
       const commentId: number = Number(request.params.commentId);

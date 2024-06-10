@@ -197,7 +197,16 @@ export class CardController {
     }
   }
 
-  @ApiOperation({ summary: 'удаление карточки по её id' })
+  @ApiOperation({
+    summary: 'удаление карточки по её id',
+    description:
+      'вместе с карточкой удаляются все зависимые от неё записи(комментарий)',
+  })
+  @ApiParam({
+    name: 'commentId',
+    required: true,
+    description: 'id комментария',
+  })
   @ApiResponse({ status: HttpStatus.OK, type: CardDto })
   @ApiResponse({
     status: HttpStatus.UNAUTHORIZED,

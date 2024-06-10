@@ -10,11 +10,13 @@ import {
   ParseIntPipe,
   Param,
   Put,
+  Delete,
 } from '@nestjs/common';
 import {
   ApiBearerAuth,
   ApiBody,
   ApiOperation,
+  ApiParam,
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
@@ -114,6 +116,42 @@ export class CommentController {
         commentId,
         editCommentDto,
       );
+    } catch (error) {
+      throw exceptionHandler(error, this.logger);
+    }
+  }
+
+  @ApiOperation({ summary: 'удаления комментария' })
+  @ApiParam({
+    name: 'commentId',
+    required: true,
+    description: 'id комментария',
+  })
+  @ApiResponse({ status: HttpStatus.OK })
+  @ApiResponse({
+    status: HttpStatus.UNAUTHORIZED,
+    description: 'появляется, если пользователь не авторизован',
+    type: HttpExceptionDto,
+  })
+  @ApiResponse({
+    status: HttpStatus.FORBIDDEN,
+    description:
+      'появляется, если пользователь не является владельцем комментария',
+    type: HttpExceptionDto,
+  })
+  @ApiResponse({
+    status: HttpStatus.BAD_REQUEST,
+    description: 'появляется при ошибках валидации полей',
+    type: HttpExceptionDto,
+  })
+  @UseGuards(AuthGuard('jwt'), AuthorCommentGuard)
+  @Delete('/:commentId')
+  @ApiBearerAuth('JWT-Auth')
+  async deleteCommentById(
+    @Param('commentId', ParseIntPipe) commentId,
+  ): Promise<void> {
+    try {
+      await this.commentService.deleteCommentById(commentId);
     } catch (error) {
       throw exceptionHandler(error, this.logger);
     }

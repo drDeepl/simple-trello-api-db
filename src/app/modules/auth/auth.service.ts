@@ -1,4 +1,9 @@
-import { Injectable, Logger, UnauthorizedException } from '@nestjs/common';
+import {
+  ForbiddenException,
+  Injectable,
+  Logger,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService, TokenExpiredError } from '@nestjs/jwt';
 import { User } from '@prisma/client';
@@ -56,7 +61,6 @@ export class AuthService {
 
   async signUp(dto: SignUpDto): Promise<TokensDto> {
     try {
-      this.logger.debug(dto);
       const passwordHash = await this.hashData(dto.password);
 
       const user: User = await this.userRepository.create({
@@ -87,7 +91,7 @@ export class AuthService {
       user.passwordHash,
     );
     if (!passwordMatches) {
-      throw new UnauthorizedException('неверный пароль');
+      throw new ForbiddenException('неверный пароль');
     }
     return await this.getTokens(user.id);
   }

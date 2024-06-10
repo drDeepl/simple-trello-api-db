@@ -15,6 +15,7 @@ export class OwnerCardGuard implements CanActivate {
   constructor(private readonly cardService: CardService) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
+    this.logger.warn('CAN ACTIVATE');
     try {
       const request: AuthRequest = context.switchToHttp().getRequest();
       const cardId: number = Number(request.params.cardId);

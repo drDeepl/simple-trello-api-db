@@ -97,7 +97,7 @@ export class ColumnController {
   }
 
   @ApiOperation({ summary: 'получение колонок пользователя по его id' })
-  @ApiResponse({ status: HttpStatus.OK, type: CreatedColumnDto })
+  @ApiResponse({ status: HttpStatus.OK, type: CreatedColumnDto, isArray: true })
   @ApiResponse({
     status: HttpStatus.UNAUTHORIZED,
     description: 'появляется, если пользователь не авторизован',
@@ -155,7 +155,11 @@ export class ColumnController {
     }
   }
 
-  @ApiOperation({ summary: 'удаление колонки' })
+  @ApiOperation({
+    summary: 'удаление колонки',
+    description:
+      'вместе с колонкой удаляются все зависимые от неё записи(карточка, комментарий к кароточке)',
+  })
   @ApiResponse({ status: HttpStatus.OK, type: CreatedColumnDto })
   @ApiResponse({
     status: HttpStatus.UNAUTHORIZED,

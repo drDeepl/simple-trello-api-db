@@ -15,6 +15,7 @@ export class CommentWithoutCardGuard implements CanActivate {
   constructor(private readonly commentService: CommentService) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
+    this.logger.warn('CAN ACTIVATE');
     try {
       const request: AuthRequest = context.switchToHttp().getRequest();
       const commentId: number = Number(request.params.commentId);
@@ -24,7 +25,6 @@ export class CommentWithoutCardGuard implements CanActivate {
       if (isCommentWithoutCard) {
         return true;
       }
-
       throw new NotOwnerException(
         'выбранный комментарий принадлежит другой карточке',
       );

@@ -87,7 +87,6 @@ export class CardService {
         data: {
           columnId: columnId,
           position: moveCardDto.position,
-          updatedAt: new Date(),
         },
         where: { id: cardId },
       });

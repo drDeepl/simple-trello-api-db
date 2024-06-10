@@ -11,6 +11,8 @@ npm install
 ## Запуск приложения
 
 ```bash
+npx prisma generate
+
 # development
 npm run start
 

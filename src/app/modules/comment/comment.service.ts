@@ -128,6 +128,18 @@ export class CommentService {
     }
   }
 
+  async deleteCommentById(id: number): Promise<void> {
+    try {
+      await this.commentRepository.delete({
+        where: {
+          id: id,
+        },
+      });
+    } catch (error) {
+      throw this.prismaExceptionHandler.handleError(error);
+    }
+  }
+
   async isCommentWithoutCard(commentId: number): Promise<boolean> {
     try {
       const comment: Comment = await this.commentRepository.findUnique({
@@ -136,7 +148,7 @@ export class CommentService {
         },
       });
 
-      return isNaN(comment.cardId);
+      return comment.cardId === null;
     } catch (error) {
       throw this.prismaExceptionHandler.handleError(error);
     }
