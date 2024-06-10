@@ -1,5 +1,5 @@
 import { PrismaExceptionHandler } from '@/app/helpers/PrismaExceptionHandler';
-import { cardPrismaErrorMessage } from '@/app/utils/error-messages';
+import { cardPrismaErrorMessage } from 'src/app/utils/error-messages';
 import { BadGatewayException, Injectable, Logger } from '@nestjs/common';
 import { Card } from '@prisma/client';
 import { CardRepository } from './repository/card.repository';

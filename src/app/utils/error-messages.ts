@@ -21,3 +21,12 @@ export const columnPrismaErrorMessage: {
     description: 'Запрашивамой колонки не существует',
   },
 };
+
+export const cardPrismaErrorMessage: {
+  [key: string]: { statusCode: number; description: string };
+} = {
+  P2025: {
+    statusCode: HttpStatus.NOT_FOUND,
+    description: 'Запрашивамой карточки не существует',
+  },
+};

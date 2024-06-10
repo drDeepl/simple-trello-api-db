@@ -25,10 +25,6 @@ class SwaggerDocumentBuilder {
         'JWTAuthorization',
       );
 
-    // _SWAGGER_TAGS.forEach((tag) => {
-    //   docBuilder.addTag(tag.name, tag.description);
-    // });
-
     return docBuilder.build();
   }
 
@@ -39,7 +35,7 @@ class SwaggerDocumentBuilder {
 
   public setupSwagger() {
     const document = this.createDocument();
-    const swaggerUI = new SwaggerUI(this.configService.get('APPLICATION_URL'));
+    const swaggerUI = new SwaggerUI(this.configService.get('APP_URL'));
     SwaggerModule.setup(
       this.configService.get('SWAGGER_URL'),
       this.app,

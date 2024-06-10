@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common';
-import { ConfigModule } from '@nestjs/config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
 import { AppController } from './app.controller';
@@ -16,9 +16,14 @@ import { UserModule } from './modules/user/user.module';
       envFilePath: [`.env`],
       cache: true,
     }),
-    ServeStaticModule.forRoot({
-      rootPath: join(__dirname, '../..', 'wwwroot'),
-      serveRoot: '/api/wwwroot',
+    ServeStaticModule.forRootAsync({
+      inject: [ConfigService],
+      useFactory: (configService: ConfigService) => [
+        {
+          rootPath: join(__dirname, '../..', 'wwwroot'),
+          serveRoot: `/${configService.get<string>('SWAGGER_URL')}/wwwroot`,
+        },
+      ],
     }),
     PrismaModule,
     AuthModule,
