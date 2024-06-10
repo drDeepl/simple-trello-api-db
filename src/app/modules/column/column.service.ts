@@ -60,6 +60,7 @@ export class ColumnService {
             card.description,
             card.position,
             card.updatedAt,
+            card.columnId,
           ),
       );
     } catch (error) {

@@ -23,6 +23,7 @@ import { CreatedColumnDto } from './dto/created-column.dto';
 import { EditColumnDto } from './dto/edit-column.dto';
 import { OwnerColumnGuard } from './guards/owner-column.guard';
 import { CardDto } from '../card/dto/card-dto';
+import { HttpExceptionDto } from '@/app/common/dto/http-exception.dto';
 
 @ApiTags('ColumnController')
 @Controller('columns')
@@ -31,15 +32,27 @@ export class ColumnController {
   constructor(private readonly columnService: ColumnService) {}
 
   @ApiOperation({ summary: 'получение списка карточек для колонки' })
-  @ApiResponse({ status: HttpStatus.OK, type: CreatedColumnDto })
+  @ApiResponse({ status: HttpStatus.OK, type: CardDto, isArray: true })
   @ApiResponse({
     status: HttpStatus.UNAUTHORIZED,
     description: 'появляется, если пользователь не авторизован',
+    type: HttpExceptionDto,
   })
+  @ApiResponse({
+    status: HttpStatus.FORBIDDEN,
+    description: 'появляется, если пользователь не является владельцем колонки',
+    type: HttpExceptionDto,
+  })
+  @ApiResponse({
+    status: HttpStatus.BAD_REQUEST,
+    description: 'появляется при ошибках валидации полей',
+    type: HttpExceptionDto,
+  })
+  @UseGuards(OwnerColumnGuard)
   @UseGuards(AuthGuard('jwt'))
-  @Get('/:id/cards')
+  @Get('/:columnId/cards')
   async getCardsForColumnById(
-    @Param('id', ParseIntPipe) columnId: number,
+    @Param('columnId', ParseIntPipe) columnId: number,
   ): Promise<CardDto[]> {
     try {
       return await this.columnService.getCardsForColumnById(columnId);
@@ -47,11 +60,18 @@ export class ColumnController {
       throw exceptionHandler(error, this.logger);
     }
   }
+
   @ApiOperation({ summary: 'создание колонки' })
   @ApiResponse({ status: HttpStatus.OK, type: CreatedColumnDto })
   @ApiResponse({
     status: HttpStatus.UNAUTHORIZED,
     description: 'появляется, если пользователь не авторизован',
+    type: HttpExceptionDto,
+  })
+  @ApiResponse({
+    status: HttpStatus.BAD_REQUEST,
+    description: 'появляется при ошибках валидации полей',
+    type: HttpExceptionDto,
   })
   @UseGuards(AuthGuard('jwt'))
   @Post('/')
@@ -74,6 +94,12 @@ export class ColumnController {
   @ApiResponse({
     status: HttpStatus.UNAUTHORIZED,
     description: 'появляется, если пользователь не авторизован',
+    type: HttpExceptionDto,
+  })
+  @ApiResponse({
+    status: HttpStatus.BAD_REQUEST,
+    description: 'появляется при ошибках валидации полей',
+    type: HttpExceptionDto,
   })
   @UseGuards(AuthGuard('jwt'))
   @Get('by-user/:userId')
@@ -92,17 +118,24 @@ export class ColumnController {
   @ApiResponse({
     status: HttpStatus.UNAUTHORIZED,
     description: 'появляется, если пользователь не авторизован',
+    type: HttpExceptionDto,
   })
   @ApiResponse({
     status: HttpStatus.FORBIDDEN,
     description: 'появляется, если пользователь не является владельцем колонки',
+    type: HttpExceptionDto,
+  })
+  @ApiResponse({
+    status: HttpStatus.BAD_REQUEST,
+    description: 'появляется при ошибках валидации полей',
+    type: HttpExceptionDto,
   })
   @UseGuards(OwnerColumnGuard)
   @UseGuards(AuthGuard('jwt'))
-  @Put('/:id')
+  @Put('/:columnId')
   async editColumnById(
     @Request()
-    @Param('id', ParseIntPipe)
+    @Param('columnId', ParseIntPipe)
     columnId: number,
     @Body() editColumnDto: EditColumnDto,
   ): Promise<ColumnDto> {
@@ -118,16 +151,23 @@ export class ColumnController {
   @ApiResponse({
     status: HttpStatus.UNAUTHORIZED,
     description: 'появляется, если пользователь не авторизован',
+    type: HttpExceptionDto,
   })
   @ApiResponse({
     status: HttpStatus.FORBIDDEN,
     description: 'появляется, если пользователь не является владельцем колонки',
+    type: HttpExceptionDto,
+  })
+  @ApiResponse({
+    status: HttpStatus.BAD_REQUEST,
+    description: 'появляется при ошибках валидации полей',
+    type: HttpExceptionDto,
   })
   @UseGuards(OwnerColumnGuard)
   @UseGuards(AuthGuard('jwt'))
-  @Delete('/:id')
+  @Delete('/:columnId')
   async deleteColumnById(
-    @Param('id', ParseIntPipe) columnId: number,
+    @Param('columnId', ParseIntPipe) columnId: number,
   ): Promise<void> {
     try {
       await this.columnService.deleteColumnById(columnId);

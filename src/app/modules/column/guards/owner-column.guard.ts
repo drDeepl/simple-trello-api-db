@@ -17,7 +17,7 @@ export class OwnerColumnGuard implements CanActivate {
   async canActivate(context: ExecutionContext): Promise<boolean> {
     try {
       const request: AuthRequest = context.switchToHttp().getRequest();
-      const columnId: number = Number(request.params.id);
+      const columnId: number = Number(request.params.columnId);
       const isOwnerUserColumn: boolean =
         await this.columnService.isOwnerUserColumn(
           Number(request.user.sub),
@@ -28,7 +28,9 @@ export class OwnerColumnGuard implements CanActivate {
         return true;
       }
 
-      throw new NotOwnerException();
+      throw new NotOwnerException(
+        'недостаточно прав: необходимо быть владельцем колонки',
+      );
     } catch (error) {
       throw exceptionHandler(error, this.logger);
     }

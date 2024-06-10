@@ -8,6 +8,7 @@ import { AuthModule } from './modules/auth/auth.module';
 import { ColumnModule } from './modules/column/column.module';
 import { PrismaModule } from './modules/prisma/prisma.module';
 import { UserModule } from './modules/user/user.module';
+import { CardModule } from './modules/card/card.module';
 
 @Module({
   imports: [
@@ -29,6 +30,7 @@ import { UserModule } from './modules/user/user.module';
     AuthModule,
     UserModule,
     ColumnModule,
+    CardModule,
   ],
   controllers: [AppController],
   providers: [AppService],

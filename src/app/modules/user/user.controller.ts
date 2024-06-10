@@ -17,6 +17,7 @@ import { ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { EditUserDto } from './dto/edit-user.dto';
 import { UserDto } from './dto/user.dto';
 import { UserService } from './user.service';
+import { HttpExceptionDto } from '@/app/common/dto/http-exception.dto';
 
 @ApiTags('UserController')
 @Controller('users')
@@ -29,6 +30,12 @@ export class UserController {
   @ApiResponse({
     status: HttpStatus.NOT_FOUND,
     description: 'появялется, если пользователь с выбранным id не найден',
+    type: HttpExceptionDto,
+  })
+  @ApiResponse({
+    status: HttpStatus.BAD_REQUEST,
+    description: 'появляется при ошибках валидации полей',
+    type: HttpExceptionDto,
   })
   @Get('/:id')
   async getUserById(@Param('id', ParseIntPipe) userId: number) {
@@ -45,11 +52,18 @@ export class UserController {
     status: HttpStatus.NOT_FOUND,
     description:
       'появляется при отсутствии access token-a в заголовке или когда пользователь не является владельцем изменяемых данных',
+    type: HttpExceptionDto,
   })
   @ApiResponse({
     status: HttpStatus.FORBIDDEN,
     description:
       'появляется, если id пользователя из токена не совпадает с id из параметра запроса',
+    type: HttpExceptionDto,
+  })
+  @ApiResponse({
+    status: HttpStatus.BAD_REQUEST,
+    description: 'появляется при ошибках валидации полей',
+    type: HttpExceptionDto,
   })
   @ApiBody({ type: EditUserDto, description: '' })
   @UseGuards(EmailExistGuard)
@@ -72,11 +86,18 @@ export class UserController {
     status: HttpStatus.NOT_FOUND,
     description:
       'появляется при отсутствии access token-a в заголовке или когда пользователь не является владельцем изменяемых данных',
+    type: HttpExceptionDto,
   })
   @ApiResponse({
     status: HttpStatus.FORBIDDEN,
     description:
       'появляется, если id пользователя из токена не совпадает с id из параметра запроса',
+    type: HttpExceptionDto,
+  })
+  @ApiResponse({
+    status: HttpStatus.BAD_REQUEST,
+    description: 'появляется при ошибках валидации полей',
+    type: HttpExceptionDto,
   })
   @UseGuards(OwnerUserGuard)
   @Delete('/:id')

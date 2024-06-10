@@ -17,7 +17,7 @@ export class OwnerCardGuard implements CanActivate {
   async canActivate(context: ExecutionContext): Promise<boolean> {
     try {
       const request: AuthRequest = context.switchToHttp().getRequest();
-      const cardId: number = Number(request.params.id);
+      const cardId: number = Number(request.params.cardId);
       const isOwnerUserCard: boolean = await this.cardService.isOwnerUserCard(
         Number(request.user.sub),
         cardId,
@@ -27,7 +27,9 @@ export class OwnerCardGuard implements CanActivate {
         return true;
       }
 
-      throw new NotOwnerException();
+      throw new NotOwnerException(
+        'недостаточно прав: необходимо быть владельцем карточки',
+      );
     } catch (error) {
       throw exceptionHandler(error, this.logger);
     }

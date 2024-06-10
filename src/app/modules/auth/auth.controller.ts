@@ -12,6 +12,7 @@ import { exceptionHandler } from '../../helpers/exception-handler.helpers';
 import { AuthService } from './auth.service';
 import { default as CreateUserDto, default as SignUpDto } from './dto/sign-up';
 import TokensDto from './dto/tokens.dto';
+import { HttpExceptionDto } from '@/app/common/dto/http-exception.dto';
 
 @ApiTags('AuthController')
 @Controller('auth')
@@ -25,6 +26,7 @@ export class AuthController {
   @ApiResponse({
     status: HttpStatus.BAD_REQUEST,
     description: 'появляется при ошибках валидации полей',
+    type: HttpExceptionDto,
   })
   @ApiBody({ type: CreateUserDto, description: '' })
   @UseGuards(EmailExistGuard)
@@ -42,11 +44,13 @@ export class AuthController {
   @ApiResponse({
     status: HttpStatus.BAD_REQUEST,
     description: 'появляется при ошибках валидации полей',
+    type: HttpExceptionDto,
   })
   @ApiResponse({
     status: HttpStatus.UNAUTHORIZED,
     description:
       'появляется при несовпадении введенного пароля с паролем пользователя',
+    type: HttpExceptionDto,
   })
   @ApiBody({ type: CreateUserDto, description: '' })
   @Post('signin')
