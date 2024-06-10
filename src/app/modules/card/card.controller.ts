@@ -15,6 +15,7 @@ import {
   ApiBearerAuth,
   ApiBody,
   ApiOperation,
+  ApiParam,
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
@@ -31,6 +32,7 @@ import { HttpExceptionDto } from '@/app/common/dto/http-exception.dto';
 import { MoveCardDto } from './dto/move-card.dto';
 import { AuthorCommentGuard } from '../comment/guards/author-comment.guard';
 import { CommentDto } from '../comment/dto/comment.dto';
+import { CommentWithoutCardGuard } from '../comment/guards/comment-without-card.guard';
 
 @ApiTags('CardController')
 @Controller('cards')
@@ -40,6 +42,7 @@ export class CardController {
   constructor(private readonly cardService: CardService) {}
 
   @ApiOperation({ summary: 'создание карточки для колонки с id columnId' })
+  @ApiParam({ name: 'columnId', required: true, description: 'id колонки' })
   @ApiResponse({ status: HttpStatus.OK, type: CardDto })
   @ApiResponse({
     status: HttpStatus.UNAUTHORIZED,
@@ -60,7 +63,7 @@ export class CardController {
   @ApiBearerAuth('JWT-Auth')
   @UseGuards(OwnerColumnGuard)
   @UseGuards(AuthGuard('jwt'))
-  @Post(':columnId')
+  @Post('/:columnId')
   async createCard(
     @Request() req: AuthRequest,
     @Param('columnId', ParseIntPipe) columnId,
@@ -175,9 +178,12 @@ export class CardController {
     description: 'появляется при ошибках валидации полей',
     type: HttpExceptionDto,
   })
-  @UseGuards(AuthorCommentGuard)
-  @UseGuards(OwnerCardGuard)
-  @UseGuards(AuthGuard('jwt'))
+  @UseGuards(
+    AuthGuard('jwt'),
+    OwnerCardGuard,
+    AuthorCommentGuard,
+    CommentWithoutCardGuard,
+  )
   @Put('/:cardId/actions/comments/:commentId')
   @ApiBearerAuth('JWT-Auth')
   async addCommentOnCard(

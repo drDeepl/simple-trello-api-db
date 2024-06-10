@@ -5,6 +5,7 @@ import { Comment } from '@prisma/client';
 import { CommentRepository } from './repository/comment.repository';
 import { CreateCommentDto } from './dto/create-comment.dto';
 import { CommentDto } from './dto/comment.dto';
+import { EditCommentDto } from './dto/edit-comment.dto';
 
 @Injectable()
 export class CommentService {
@@ -42,7 +43,7 @@ export class CommentService {
 
   async setCardId(commentId: number, cardId: number): Promise<CommentDto> {
     try {
-      const updatedCardComment: Comment = await this.commentRepository.update({
+      const updatedComment: Comment = await this.commentRepository.update({
         data: {
           cardId: cardId,
         },
@@ -51,12 +52,39 @@ export class CommentService {
         },
       });
       return new CommentDto(
-        updatedCardComment.id,
-        updatedCardComment.text,
-        updatedCardComment.updatedAt,
-        updatedCardComment.createdAt,
-        updatedCardComment.authorId,
-        updatedCardComment.cardId,
+        updatedComment.id,
+        updatedComment.text,
+        updatedComment.updatedAt,
+        updatedComment.createdAt,
+        updatedComment.authorId,
+        updatedComment.cardId,
+      );
+    } catch (error) {
+      throw this.prismaExceptionHandler.handleError(error);
+    }
+  }
+
+  async editCommentById(
+    commentId: number,
+    dto: EditCommentDto,
+  ): Promise<CommentDto> {
+    try {
+      const updatedComment: Comment = await this.commentRepository.update({
+        data: {
+          text: dto.text,
+          updatedAt: new Date(),
+        },
+        where: {
+          id: commentId,
+        },
+      });
+      return new CommentDto(
+        updatedComment.id,
+        updatedComment.text,
+        updatedComment.updatedAt,
+        updatedComment.createdAt,
+        updatedComment.authorId,
+        updatedComment.cardId,
       );
     } catch (error) {
       throw this.prismaExceptionHandler.handleError(error);
@@ -95,6 +123,20 @@ export class CommentService {
         },
       });
       return !!comment;
+    } catch (error) {
+      throw this.prismaExceptionHandler.handleError(error);
+    }
+  }
+
+  async isCommentWithoutCard(commentId: number): Promise<boolean> {
+    try {
+      const comment: Comment = await this.commentRepository.findUnique({
+        where: {
+          id: commentId,
+        },
+      });
+
+      return isNaN(comment.cardId);
     } catch (error) {
       throw this.prismaExceptionHandler.handleError(error);
     }

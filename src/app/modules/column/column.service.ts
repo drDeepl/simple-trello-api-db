@@ -39,7 +39,7 @@ export class ColumnService {
         createdColumn.id,
         createdColumn.title,
         createdColumn.position,
-        createdColumn.createdAt.toISOString(),
+        createdColumn.createdAt,
         createdColumn.userId,
       );
     } catch (error) {
@@ -82,9 +82,9 @@ export class ColumnService {
         editedColumn.id,
         editedColumn.title,
         editedColumn.position,
-        editedColumn.createdAt.toISOString(),
+        editedColumn.createdAt,
         editedColumn.userId,
-        editedColumn.updatedAt.toISOString(),
+        editedColumn.updatedAt,
       );
     } catch (error) {
       throw this.prismaExceptionHandler.handleError(error);
@@ -101,9 +101,9 @@ export class ColumnService {
             column.id,
             column.title,
             column.position,
-            column.createdAt.toISOString(),
+            column.createdAt,
             column.userId,
-            column.updatedAt?.toISOString(),
+            column.updatedAt,
           ),
       );
     } catch (error) {

@@ -53,10 +53,10 @@ export class ColumnController {
     description: 'появляется при ошибках валидации полей',
     type: HttpExceptionDto,
   })
-  @ApiBearerAuth('JWT-Auth')
   @UseGuards(OwnerColumnGuard)
   @UseGuards(AuthGuard('jwt'))
   @Get('/:columnId/cards')
+  @ApiBearerAuth('JWT-Auth')
   async getCardsForColumnById(
     @Param('columnId', ParseIntPipe) columnId: number,
   ): Promise<CardDto[]> {
@@ -79,9 +79,9 @@ export class ColumnController {
     description: 'появляется при ошибках валидации полей',
     type: HttpExceptionDto,
   })
-  @ApiBearerAuth('JWT-Auth')
   @UseGuards(AuthGuard('jwt'))
   @Post('/')
+  @ApiBearerAuth('JWT-Auth')
   async createColumn(
     @Request() req: AuthRequest,
     @Body() createColumnDto: CreateColumnDto,
@@ -108,9 +108,9 @@ export class ColumnController {
     description: 'появляется при ошибках валидации полей',
     type: HttpExceptionDto,
   })
-  @ApiBearerAuth('JWT-Auth')
   @UseGuards(AuthGuard('jwt'))
   @Get('by-user/:userId')
+  @ApiBearerAuth('JWT-Auth')
   async getColumnsByUserId(
     @Param('userId', ParseIntPipe) userId: number,
   ): Promise<ColumnDto[]> {
@@ -138,10 +138,10 @@ export class ColumnController {
     description: 'появляется при ошибках валидации полей',
     type: HttpExceptionDto,
   })
-  @ApiBearerAuth('JWT-Auth')
   @UseGuards(OwnerColumnGuard)
   @UseGuards(AuthGuard('jwt'))
   @Put('/:columnId')
+  @ApiBearerAuth('JWT-Auth')
   async editColumnById(
     @Request()
     @Param('columnId', ParseIntPipe)
@@ -172,10 +172,10 @@ export class ColumnController {
     description: 'появляется при ошибках валидации полей',
     type: HttpExceptionDto,
   })
-  @ApiBearerAuth('JWT-Auth')
   @UseGuards(OwnerColumnGuard)
   @UseGuards(AuthGuard('jwt'))
   @Delete('/:columnId')
+  @ApiBearerAuth('JWT-Auth')
   async deleteColumnById(
     @Param('columnId', ParseIntPipe) columnId: number,
   ): Promise<void> {

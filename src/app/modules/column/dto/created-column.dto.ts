@@ -27,12 +27,12 @@ export class CreatedColumnDto extends BaseColumnDto {
     id: number,
     title: string,
     position: number,
-    createdAt: string,
+    createdAt: Date,
     userId: number,
   ) {
     super(title, position);
     this.id = id;
-    this.createdAt = createdAt;
+    this.createdAt = createdAt.toISOString();
     this.userId = userId;
   }
 }

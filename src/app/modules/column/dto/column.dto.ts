@@ -21,11 +21,11 @@ export class ColumnDto extends CreatedColumnDto {
     id: number,
     title: string,
     position: number,
-    createdAt: string,
+    createdAt: Date,
     userId: number,
-    updatedAt: string | null = null,
+    updatedAt: Date,
   ) {
     super(id, title, position, createdAt, userId);
-    this.updatedAt = updatedAt;
+    this.updatedAt = updatedAt ? updatedAt.toISOString() : null;
   }
 }
