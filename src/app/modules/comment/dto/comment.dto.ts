@@ -45,15 +45,15 @@ export class CommentDto extends BaseCommentDto {
   constructor(
     id: number,
     text: string,
-    updatedAt: string | null,
-    createdAt: string,
+    updatedAt: Date | null,
+    createdAt: Date,
     authorId: number,
     cardId: number | null,
   ) {
     super(text);
     this.id = id;
-    this.updatedAt = updatedAt;
-    this.createdAt = createdAt;
+    this.updatedAt = updatedAt ? updatedAt.toISOString() : null;
+    this.createdAt = createdAt.toISOString();
     this.authorId = authorId;
     this.cardId = cardId;
   }

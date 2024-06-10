@@ -15,7 +15,12 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
-import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiOperation,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 import { ColumnService } from './column.service';
 import { ColumnDto } from './dto/column.dto';
 import { CreateColumnDto } from './dto/create-column.dto';
@@ -48,6 +53,7 @@ export class ColumnController {
     description: 'появляется при ошибках валидации полей',
     type: HttpExceptionDto,
   })
+  @ApiBearerAuth('JWT-Auth')
   @UseGuards(OwnerColumnGuard)
   @UseGuards(AuthGuard('jwt'))
   @Get('/:columnId/cards')
@@ -73,6 +79,7 @@ export class ColumnController {
     description: 'появляется при ошибках валидации полей',
     type: HttpExceptionDto,
   })
+  @ApiBearerAuth('JWT-Auth')
   @UseGuards(AuthGuard('jwt'))
   @Post('/')
   async createColumn(
@@ -101,6 +108,7 @@ export class ColumnController {
     description: 'появляется при ошибках валидации полей',
     type: HttpExceptionDto,
   })
+  @ApiBearerAuth('JWT-Auth')
   @UseGuards(AuthGuard('jwt'))
   @Get('by-user/:userId')
   async getColumnsByUserId(
@@ -130,6 +138,7 @@ export class ColumnController {
     description: 'появляется при ошибках валидации полей',
     type: HttpExceptionDto,
   })
+  @ApiBearerAuth('JWT-Auth')
   @UseGuards(OwnerColumnGuard)
   @UseGuards(AuthGuard('jwt'))
   @Put('/:columnId')
@@ -163,6 +172,7 @@ export class ColumnController {
     description: 'появляется при ошибках валидации полей',
     type: HttpExceptionDto,
   })
+  @ApiBearerAuth('JWT-Auth')
   @UseGuards(OwnerColumnGuard)
   @UseGuards(AuthGuard('jwt'))
   @Delete('/:columnId')

@@ -11,7 +11,13 @@ import {
   Put,
   Delete,
 } from '@nestjs/common';
-import { ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiBody,
+  ApiOperation,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 import { CardService } from './card.service';
 import { AuthRequest } from '@/app/common/types/auth-request.type';
 import { AuthGuard } from '@nestjs/passport';
@@ -23,6 +29,8 @@ import { OwnerCardGuard } from './guards/owner-card.guard';
 import { EditCardDto } from './dto/edit-card.dto';
 import { HttpExceptionDto } from '@/app/common/dto/http-exception.dto';
 import { MoveCardDto } from './dto/move-card.dto';
+import { AuthorCommentGuard } from '../comment/guards/author-comment.guard';
+import { CommentDto } from '../comment/dto/comment.dto';
 
 @ApiTags('CardController')
 @Controller('cards')
@@ -49,6 +57,7 @@ export class CardController {
     description: 'появляется при ошибках валидации полей',
     type: HttpExceptionDto,
   })
+  @ApiBearerAuth('JWT-Auth')
   @UseGuards(OwnerColumnGuard)
   @UseGuards(AuthGuard('jwt'))
   @Post(':columnId')
@@ -90,6 +99,7 @@ export class CardController {
     description: 'появляется при ошибках валидации полей',
     type: HttpExceptionDto,
   })
+  @ApiBearerAuth('JWT-Auth')
   @UseGuards(OwnerCardGuard)
   @UseGuards(AuthGuard('jwt'))
   @Put(':cardId')
@@ -126,6 +136,7 @@ export class CardController {
     description: 'появляется при ошибках валидации полей',
     type: HttpExceptionDto,
   })
+  @ApiBearerAuth('JWT-Auth')
   @UseGuards(OwnerColumnGuard)
   @UseGuards(OwnerCardGuard)
   @UseGuards(AuthGuard('jwt'))
@@ -136,7 +147,45 @@ export class CardController {
     @Body() moveCardDto: MoveCardDto,
   ): Promise<CardDto> {
     try {
-      return this.cardService.moveCardToColumn(cardId, columnId, moveCardDto);
+      return await this.cardService.moveCardToColumn(
+        cardId,
+        columnId,
+        moveCardDto,
+      );
+    } catch (error) {
+      throw exceptionHandler(error, this.logger);
+    }
+  }
+
+  @ApiOperation({ summary: 'добавление комментария к карточке' })
+  @ApiResponse({ status: HttpStatus.OK, type: CommentDto })
+  @ApiResponse({
+    status: HttpStatus.UNAUTHORIZED,
+    description: 'появляется, если пользователь не авторизован',
+    type: HttpExceptionDto,
+  })
+  @ApiResponse({
+    status: HttpStatus.FORBIDDEN,
+    description:
+      'появляется, если пользователь не является владельцем карточки или комментария',
+    type: HttpExceptionDto,
+  })
+  @ApiResponse({
+    status: HttpStatus.BAD_REQUEST,
+    description: 'появляется при ошибках валидации полей',
+    type: HttpExceptionDto,
+  })
+  @UseGuards(AuthorCommentGuard)
+  @UseGuards(OwnerCardGuard)
+  @UseGuards(AuthGuard('jwt'))
+  @Put('/:cardId/actions/comments/:commentId')
+  @ApiBearerAuth('JWT-Auth')
+  async addCommentOnCard(
+    @Param('cardId', ParseIntPipe) cardId: number,
+    @Param('commentId', ParseIntPipe) commentId: number,
+  ): Promise<CommentDto> {
+    try {
+      return await this.cardService.addComment(cardId, commentId);
     } catch (error) {
       throw exceptionHandler(error, this.logger);
     }
@@ -163,6 +212,7 @@ export class CardController {
   @UseGuards(OwnerCardGuard)
   @UseGuards(AuthGuard('jwt'))
   @Delete(':cardId')
+  @ApiBearerAuth('JWT-Auth')
   async deleteCardById(@Param('cardId', ParseIntPipe) cardId): Promise<void> {
     try {
       await this.cardService.deleteCardById(cardId);

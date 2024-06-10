@@ -7,17 +7,21 @@ import { UserRepository } from '../user/repository/user.repository';
 import { JwtService } from '@nestjs/jwt';
 import { ColumnService } from '../column/column.service';
 import { ColumnRepository } from '../column/repository/column.repository';
+import { CommentService } from '../comment/comment.service';
+import { CommentRepository } from '../comment/repository/comment.repository';
 
 @Module({
   controllers: [CardController],
   providers: [
-    CardService,
-    ColumnService,
-    ColumnRepository,
-    CardRepository,
     UserRepository,
-    AuthService,
     JwtService,
+    AuthService,
+    CommentRepository,
+    CommentService,
+    ColumnRepository,
+    ColumnService,
+    CardRepository,
+    CardService,
   ],
 })
 export class CardModule {}

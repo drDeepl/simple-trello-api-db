@@ -7,6 +7,9 @@ import { CreateCardDto } from './dto/create-card.dto';
 import { CardDto } from './dto/card-dto';
 import { EditCardDto } from './dto/edit-card.dto';
 import { MoveCardDto } from './dto/move-card.dto';
+import { CommentRepository } from '../comment/repository/comment.repository';
+import { CommentService } from '../comment/comment.service';
+import { CommentDto } from '../comment/dto/comment.dto';
 
 @Injectable()
 export class CardService {
@@ -15,7 +18,10 @@ export class CardService {
     cardPrismaErrorMessage,
   );
 
-  constructor(private readonly cardRepository: CardRepository) {}
+  constructor(
+    private readonly cardRepository: CardRepository,
+    private readonly commentService: CommentService,
+  ) {}
 
   async createCard(
     userId: number,
@@ -106,6 +112,15 @@ export class CardService {
           id: cardId,
         },
       });
+    } catch (error) {
+      this.logger.error(error);
+      throw this.prismaExceptionHandler.handleError(error);
+    }
+  }
+
+  async addComment(cardId: number, commentId: number): Promise<CommentDto> {
+    try {
+      return await this.commentService.setCardId(commentId, cardId);
     } catch (error) {
       this.logger.error(error);
       throw this.prismaExceptionHandler.handleError(error);
