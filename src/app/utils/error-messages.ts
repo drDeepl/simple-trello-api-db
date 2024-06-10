@@ -30,3 +30,12 @@ export const cardPrismaErrorMessage: {
     description: 'Запрашивамой карточки не существует',
   },
 };
+
+export const commentPrismaErrorMessage: {
+  [key: string]: { statusCode: number; description: string };
+} = {
+  P2025: {
+    statusCode: HttpStatus.NOT_FOUND,
+    description: 'Запрашиваемого комментария не существует',
+  },
+};

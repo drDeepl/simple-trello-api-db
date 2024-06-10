@@ -12,18 +12,19 @@ class SwaggerDocumentBuilder {
   private buildConfig() {
     const docBuilder = new DocumentBuilder()
       .setTitle('SimpleTrelloApp')
+      .addServer(this.configService.get('APP_URL'))
       .setDescription('RESTful API схожий с trello')
       .setVersion('1.0')
-      .addBasicAuth()
       .addBearerAuth(
         {
-          bearerFormat: 'Bearer',
-          scheme: 'Bearer',
           type: 'http',
-          in: 'Header',
+          bearerFormat: 'bearer',
+          scheme: 'bearer',
+          in: 'header',
         },
-        'JWTAuthorization',
-      );
+        'JWT-Auth',
+      )
+      .addSecurityRequirements('JWT-auth');
 
     return docBuilder.build();
   }

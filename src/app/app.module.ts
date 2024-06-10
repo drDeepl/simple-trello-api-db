@@ -9,6 +9,7 @@ import { ColumnModule } from './modules/column/column.module';
 import { PrismaModule } from './modules/prisma/prisma.module';
 import { UserModule } from './modules/user/user.module';
 import { CardModule } from './modules/card/card.module';
+import { CommentModule } from './modules/comment/comment.module';
 
 @Module({
   imports: [
@@ -31,6 +32,7 @@ import { CardModule } from './modules/card/card.module';
     UserModule,
     ColumnModule,
     CardModule,
+    CommentModule,
   ],
   controllers: [AppController],
   providers: [AppService],
