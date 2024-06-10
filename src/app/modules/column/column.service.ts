@@ -1,12 +1,14 @@
 import { PrismaExceptionHandler } from '@/app/helpers/PrismaExceptionHandler';
 import { columnPrismaErrorMessage } from '@/app/utils/error-messages';
 import { Injectable, Logger } from '@nestjs/common';
-import { Column } from '@prisma/client';
+import { Card, Column } from '@prisma/client';
 import { ColumnDto } from './dto/column.dto';
 import { CreateColumnDto } from './dto/create-column.dto';
 import { CreatedColumnDto } from './dto/created-column.dto';
 import { EditColumnDto } from './dto/edit-column.dto';
 import { ColumnRepository } from './repository/column.repository';
+import { CardRepository } from '../card/repository/card.repository';
+import { CardDto } from '../card/dto/card-dto';
 
 @Injectable()
 export class ColumnService {
@@ -15,7 +17,10 @@ export class ColumnService {
     columnPrismaErrorMessage,
   );
 
-  constructor(private readonly columnRepository: ColumnRepository) {}
+  constructor(
+    private readonly columnRepository: ColumnRepository,
+    private readonly cardRepository: CardRepository,
+  ) {}
 
   async createColumn(
     userId: number,
@@ -30,13 +35,32 @@ export class ColumnService {
           userId: userId,
         },
       });
-      console.log(createdColumn);
       return new CreatedColumnDto(
         createdColumn.id,
         createdColumn.title,
         createdColumn.position,
         createdColumn.createdAt.toISOString(),
         createdColumn.userId,
+      );
+    } catch (error) {
+      throw this.prismaExceptionHandler.handleError(error);
+    }
+  }
+
+  async getCardsForColumnById(columnId: number) {
+    try {
+      const cards: Card[] = await this.cardRepository.findMany({
+        where: { columnId: columnId },
+      });
+      return cards.map(
+        (card: Card) =>
+          new CardDto(
+            card.id,
+            card.title,
+            card.description,
+            card.position,
+            card.updatedAt,
+          ),
       );
     } catch (error) {
       throw this.prismaExceptionHandler.handleError(error);

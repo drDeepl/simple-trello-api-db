@@ -17,4 +17,9 @@ export class BaseCardDto {
   })
   @IsInt({ message: 'позиция карточки должна быть целым числом' })
   position: number;
+
+  constructor(title: string, position: number) {
+    this.title = title;
+    this.position = position;
+  }
 }

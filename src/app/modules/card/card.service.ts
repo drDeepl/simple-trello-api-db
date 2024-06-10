@@ -14,7 +14,6 @@ export class CardService {
   constructor(private readonly cardRepository: CardRepository) {}
 
   async isOwnerUserCard(userId: number, cardId): Promise<boolean> {
-    throw new BadGatewayException('TODO: ADD FIELD user id in schema');
     try {
       const column: Card = await this.cardRepository.findUnique({
         where: {

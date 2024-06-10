@@ -22,13 +22,31 @@ import { CreateColumnDto } from './dto/create-column.dto';
 import { CreatedColumnDto } from './dto/created-column.dto';
 import { EditColumnDto } from './dto/edit-column.dto';
 import { OwnerColumnGuard } from './guards/owner-column.guard';
+import { CardDto } from '../card/dto/card-dto';
 
 @ApiTags('ColumnController')
-@Controller('column')
+@Controller('columns')
 export class ColumnController {
   private readonly logger = new Logger(ColumnController.name);
   constructor(private readonly columnService: ColumnService) {}
 
+  @ApiOperation({ summary: 'получение списка карточек для колонки' })
+  @ApiResponse({ status: HttpStatus.OK, type: CreatedColumnDto })
+  @ApiResponse({
+    status: HttpStatus.UNAUTHORIZED,
+    description: 'появляется, если пользователь не авторизован',
+  })
+  @UseGuards(AuthGuard('jwt'))
+  @Get('/:id/cards')
+  async getCardsForColumnById(
+    @Param('id', ParseIntPipe) columnId: number,
+  ): Promise<CardDto[]> {
+    try {
+      return await this.columnService.getCardsForColumnById(columnId);
+    } catch (error) {
+      throw exceptionHandler(error, this.logger);
+    }
+  }
   @ApiOperation({ summary: 'создание колонки' })
   @ApiResponse({ status: HttpStatus.OK, type: CreatedColumnDto })
   @ApiResponse({
